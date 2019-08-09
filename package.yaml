@@ -1,0 +1,30 @@
+name:                glitch-art
+version:             0.1.0.0
+github:              "quasi-coherent/glitch-art"
+license:             BSD3
+author:              "Daniel Donohue"
+maintainer:          "d.michael.donohue@gmail.com"
+copyright:           "2019 Daniel Donohue"
+
+extra-source-files:
+- README.md
+
+description: Please see the README on GitHub at <https://github.com/quasi-coherent/glitch-art#readme>
+
+executables:
+  glitch-art:
+    main: Main.hs
+    source-dirs: .
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    dependencies:
+    - base >= 4.7 && < 5
+    - JuicyPixels
+    - lens
+    - optparse-applicative
+    - primitive
+    - random-extras
+    - random-fu
