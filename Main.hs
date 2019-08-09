@@ -22,22 +22,40 @@ main = do
   let baseDir  = cImgPath ^. directory
       fileName = cImgPath ^. filename
       new = makeImage swapOpts src
-  writePng (baseDir <> "/" <> show cColRand <> "_" <> show cRowRand <> "-" <> fileName) new
+  writePng (makeFileName cli baseDir fileName) new
   where
-    validateCLI cli@(CLI _ c r) = if (c < 0 || c > 100) || (r < 0 || r > 100)
-      then Left "Options -c and -r should be integers in the range [0, 100]." else Right cli
+    makeFileName CLI {..} baseDir fileName =
+      baseDir
+        <> "/glitched-"
+        <> show cColRand <> "-" <> show cColLowerBound <> "-" <> show cColUpperBound <> "_"
+        <> show cRowRand <> "-" <> show cRowLowerBound <> "-" <> show cRowUpperBound <> "_"
+        <> fileName
+    validateCLI cli@(CLI _ c cMin cMax r rMin rMax)
+      | any (\arg -> arg < 0 || arg > 100) [c, cMin, cMax, r, rMin, rMax]
+        = Left "Options should be integers in the range [0, 100]."
+      | (cMin >= cMax) || (rMin >= rMax)
+        = Left "Column/row minimum must be less than the column/row maximum."
+      | otherwise = Right cli
     cliParser = info (helper <*> parseCLI) (header "glitch-art")
     parseCLI = CLI
       <$> strOption (long "file" <> help "Image to sort")
       <*> option auto (short 'c' <> help "Integer in the range 0-100 representing the percentage of columns to be swapped")
+      <*> option auto (long "col-min" <> help "Integer in the range 0-100 representing where to start random column swapping")
+      <*> option auto (long "col-max" <> help "Integer in the range 0-100 representing where to end random column swapping")
       <*> option auto (short 'r' <> help "Integer in the range 0-100 representing the percentage of rows to be swapped")
+      <*> option auto (long "row-min" <> help "Integer in the range 0-100 representing where to start random row swapping")
+      <*> option auto (long "row-max" <> help "Integer in the range 0-100 representing where to end random row swapping")
 
 
 -- | CLI.
 data CLI = CLI
-  { cImgPath :: FilePath -- ^ Path to the file to process.
-  , cColRand :: Int -- ^ Degree of randomness to apply to column swapping.
-  , cRowRand :: Int -- ^ Degree of randomness to apply to row swapping.
+  { cImgPath       :: FilePath -- ^ Path to the file to process.
+  , cColRand       :: Int -- ^ Degree of randomness to apply to column swapping.
+  , cColLowerBound :: Int -- ^ Where to start the column randomness (normalized to the interval [0, 100]).
+  , cColUpperBound :: Int -- ^ Where to end the column randomness (normalized to the interval [0, 100]).
+  , cRowRand       :: Int -- ^ Degree of randomness to apply to row swapping.
+  , cRowLowerBound :: Int -- ^ Where to start the row randomness (normalized to the interval [0, 100]).
+  , cRowUpperBound :: Int -- ^ Where to end the row randomness (normalized to the interval [0, 100]).
   } deriving (Eq, Show)
 
 
@@ -53,17 +71,19 @@ makeSwapOpts
   :: CLI -- ^ User-provided options.
   -> Image PixelRGBA8 -- ^ Source image.
   -> IO SwapOpts
-makeSwapOpts (CLI _ c r) Image {..} = do
-  soCol <- if c == 0 then return Nothing else Just <$> makeSwapOpt c imageWidth
-  soRow <- if r == 0 then return Nothing else Just <$> makeSwapOpt r imageHeight
+makeSwapOpts (CLI _ cRand cMin cMax rRand rMin rMax) Image {..} = do
+  soCol <- if cRand == 0 then return Nothing else Just <$> makeSwapOpt cRand cMin cMax imageWidth
+  soRow <- if rRand == 0 then return Nothing else Just <$> makeSwapOpt rRand rMin rMax imageHeight
   return SwapOpts {..}
-  where makeSwapOpt rand dim = do
-          let n' = floor $ fromIntegral (dim * rand) / 100
+  where makeSwapOpt rand dMin dMax dim = do
+          let rStart = floor $ fromIntegral (dMin * dim) / 100
+              rEnd = floor $ fromIntegral (dMax * dim) / 100
+              n' = floor $ fromIntegral ((rEnd - rStart) * rand) / 100
               n = case n' `mod` 2 of
                 0 -> n'
                 1 -> n' + 1
                 _ -> error "Mathematics is broken."
-          randSample <- runRVar (sample n [0..dim - 1]) StdRandom :: IO [Int]
+          randSample <- runRVar (sample n [rStart..rEnd - 1]) StdRandom :: IO [Int]
           return $ uncurry zip $ splitAt (floor $ fromIntegral n / 2) randSample
 
 
