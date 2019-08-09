@@ -1,4 +1,4 @@
-# pixelsort
+# glitch-art
 [OSX release](https://github.com/quasi-coherent/glitch-art/releases)
 
 ## usage
@@ -17,3 +17,12 @@ Available options:
   -r ARG                   Integer in the range 0-100 representing the
                            percentage of rows to be swapped
 ```
+
+## examples
+![original](repo_assets/image.png)
+
+![14_79](repo_assets/14_79-image.png)
+
+![79_14](repo_assets/79_14-image.png)
+
+![95_0](repo_assets/95_0-image.png)
