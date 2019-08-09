@@ -33,8 +33,8 @@ main = do
     validateCLI cli@(CLI _ c cMin cMax r rMin rMax)
       | any (\arg -> arg < 0 || arg > 100) [c, cMin, cMax, r, rMin, rMax]
         = Left "Options should be integers in the range [0, 100]."
-      | (cMin >= cMax) || (rMin >= rMax)
-        = Left "Column/row minimum must be less than the column/row maximum."
+      | (cMin > cMax) || (rMin > rMax)
+        = Left "Column/row minimum must be less than or equal to the column/row maximum."
       | otherwise = Right cli
     cliParser = info (helper <*> parseCLI) (header "glitch-art")
     parseCLI = CLI
