@@ -84,7 +84,7 @@ makeSwapOpts (CLI _ cRand cMin cMax rRand rMin rMax) Image {..} = do
                 1 -> n' + 1
                 _ -> error "Mathematics is broken."
           randSample <- runRVar (sample n [rStart..rEnd - 1]) StdRandom :: IO [Int]
-          return $ uncurry zip $ splitAt (floor $ fromIntegral n / 2) randSample
+          return . uncurry zip $ splitAt (floor $ fromIntegral n / 2) randSample
 
 
 -- | Make the final output image.
