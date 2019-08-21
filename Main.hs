@@ -36,7 +36,7 @@ main = do
       | (cMin > cMax) || (rMin > rMax)
         = Left "Column/row minimum must be less than or equal to the column/row maximum."
       | otherwise = Right cli
-    cliParser = info (helper <*> parseCLI) (header "glitch-art")
+    cliParser = info (helper <*> parseCLI) (header "dim-swap")
     parseCLI = CLI
       <$> strOption (long "file" <> help "Image to sort")
       <*> option auto (short 'c' <> help "Integer in the range 0-100 representing the percentage of columns to be swapped")

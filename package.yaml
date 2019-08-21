@@ -1,6 +1,6 @@
-name:                glitch-art
+name:                dim-swap
 version:             0.1.0.0
-github:              "quasi-coherent/glitch-art"
+github:              "quasi-coherent/dim-swap"
 license:             BSD3
 author:              "Daniel Donohue"
 maintainer:          "d.michael.donohue@gmail.com"
@@ -9,10 +9,10 @@ copyright:           "2019 Daniel Donohue"
 extra-source-files:
 - README.md
 
-description: Please see the README on GitHub at <https://github.com/quasi-coherent/glitch-art#readme>
+description: Please see the README on GitHub at <https://github.com/quasi-coherent/dim-swap#readme>
 
 executables:
-  glitch-art:
+  dim-swap:
     main: Main.hs
     source-dirs: .
     ghc-options:

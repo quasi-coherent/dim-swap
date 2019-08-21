@@ -1,13 +1,13 @@
-# glitch-art
-[OSX release](https://github.com/quasi-coherent/glitch-art/releases)
+# dim-swap
+[OSX release](https://github.com/quasi-coherent/dim-swap/releases)
 
 ## usage
 Full list of options:
 
 ``` bash
-glitch-art
+dim-swap
 
-Usage: glitch-art --file ARG -c ARG --col-min ARG --col-max ARG -r ARG
+Usage: dim-swap --file ARG -c ARG --col-min ARG --col-max ARG -r ARG
                   --row-min ARG --row-max ARG
 
 Available options:

@@ -4,13 +4,13 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9133183e1bd9b133ecbdf74503cf5d965c03c83427ac3a3db09b724e1cef83eb
+-- hash: eaa06b3ddc18a0385a6045c5601343541764abd1dcc4d851a4af3862af05c76d
 
-name:           glitch-art
+name:           dim-swap
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/quasi-coherent/glitch-art#readme>
-homepage:       https://github.com/quasi-coherent/glitch-art#readme
-bug-reports:    https://github.com/quasi-coherent/glitch-art/issues
+description:    Please see the README on GitHub at <https://github.com/quasi-coherent/dim-swap#readme>
+homepage:       https://github.com/quasi-coherent/dim-swap#readme
+bug-reports:    https://github.com/quasi-coherent/dim-swap/issues
 author:         Daniel Donohue
 maintainer:     d.michael.donohue@gmail.com
 copyright:      2019 Daniel Donohue
@@ -22,12 +22,12 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/quasi-coherent/glitch-art
+  location: https://github.com/quasi-coherent/dim-swap
 
-executable glitch-art
+executable dim-swap
   main-is: Main.hs
   other-modules:
-      Paths_glitch_art
+      Paths_dim_swap
   hs-source-dirs:
       ./.
   ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall

@@ -3,4 +3,4 @@ build:
 	stylish-haskell -i Main.hs
 	stack build $(STACK_OPTS) --copy-bins
 dev:
-	ghcid --command "stack ghci glitch-art"
+	ghcid --command "stack ghci dim-swap"
