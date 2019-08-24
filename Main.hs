@@ -8,6 +8,7 @@ import Codec.Picture
 import Codec.Picture.Types
 import Control.Lens
 import Control.Monad.ST
+import Data.List.Split
 import Data.Random hiding (sample)
 import Data.Random.Extras
 import Options.Applicative
@@ -19,24 +20,28 @@ main = do
   cli@CLI {..} <- either (error . show) id . validateCLI <$> execParser cliParser
   src <- either (error "Couldn't read image") convertRGBA8 <$> readImage cImgPath
   swapOpts <- makeSwapOpts cli src
-  let baseDir  = cImgPath ^. directory
-      fileName = cImgPath ^. filename
-      new = makeImage swapOpts src
-  writePng (makeFileName cli baseDir fileName) new
+  let new = makeImage swapOpts src
+  writePng (makeFileName cli cImgPath) new
   where
-    makeFileName CLI {..} baseDir fileName =
-      baseDir
-        <> "/glitched-"
-        <> show cColRand <> "-" <> show cColLowerBound <> "-" <> show cColUpperBound <> "_"
-        <> show cRowRand <> "-" <> show cRowLowerBound <> "-" <> show cRowUpperBound <> "_"
-        <> fileName
+    makeFileName CLI {..} imgPath =
+      let baseDir     = imgPath ^. directory
+          [name, ext] = case splitOn "." $ imgPath ^. filename of
+            (n:x:_) -> [n, x]
+            _       -> error "Invalid filename/extension."
+      in baseDir <> "/" <> name <> "-swapped-"
+          <> show cColRand <> "-" <> show cColLowerBound <> "-" <> show cColUpperBound <> "_"
+          <> show cRowRand <> "-" <> show cRowLowerBound <> "-" <> show cRowUpperBound <> "."
+          <> ext
+
     validateCLI cli@(CLI _ c cMin cMax r rMin rMax)
       | any (\arg -> arg < 0 || arg > 100) [c, cMin, cMax, r, rMin, rMax]
         = Left "Options should be integers in the range [0, 100]."
       | (cMin > cMax) || (rMin > rMax)
         = Left "Column/row minimum must be less than or equal to the column/row maximum."
       | otherwise = Right cli
+
     cliParser = info (helper <*> parseCLI) (header "dim-swap")
+
     parseCLI = CLI
       <$> strOption (long "file" <> help "Image to sort")
       <*> option auto (short 'c' <> help "Integer in the range 0-100 representing the percentage of columns to be swapped")

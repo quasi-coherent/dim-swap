@@ -28,3 +28,4 @@ executables:
     - primitive
     - random-extras
     - random-fu
+    - split
