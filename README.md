@@ -8,7 +8,7 @@ Full list of options:
 dim-swap
 
 Usage: dim-swap --file ARG -c ARG --col-min ARG --col-max ARG -r ARG
-                  --row-min ARG --row-max ARG
+                --row-min ARG --row-max ARG [--num-iters ARG]
 
 Available options:
   -h,--help                Show this help text
@@ -25,6 +25,8 @@ Available options:
                            start random row swapping
   --row-max ARG            Integer in the range 0-100 representing where to end
                            random row swapping
+  --num-iters ARG          Number of times to run swapping with the given
+                           options
 ```
 
 ## examples
