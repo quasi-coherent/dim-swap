@@ -9,6 +9,7 @@ import Codec.Picture.Types
 import Control.Lens
 import Control.Monad.ST
 import Data.List.Split
+import Data.Maybe
 import Data.Random hiding (sample)
 import Data.Random.Extras
 import Options.Applicative
@@ -20,7 +21,9 @@ main = do
   cli@CLI {..} <- either (error . show) id . validateCLI <$> execParser cliParser
   src <- either (error "Couldn't read image") convertRGBA8 <$> readImage cImgPath
   swapOpts <- makeSwapOpts cli src
-  let new = makeImage swapOpts src
+  let new = case cNumIters of
+        Nothing -> makeImage swapOpts src
+        Just n  -> foldr (.) id (replicate n (makeImage swapOpts)) src
   writePng (makeFileName cli cImgPath) new
   where
     makeFileName CLI {..} imgPath =
@@ -30,10 +33,10 @@ main = do
             _       -> error "Invalid filename/extension."
       in baseDir <> "/" <> name <> "-swapped-"
           <> show cColRand <> "-" <> show cColLowerBound <> "-" <> show cColUpperBound <> "_"
-          <> show cRowRand <> "-" <> show cRowLowerBound <> "-" <> show cRowUpperBound <> "."
-          <> ext
+          <> show cRowRand <> "-" <> show cRowLowerBound <> "-" <> show cRowUpperBound <> "x"
+          <> show (fromMaybe 1 cNumIters) <> "." <> ext
 
-    validateCLI cli@(CLI _ c cMin cMax r rMin rMax)
+    validateCLI cli@(CLI _ c cMin cMax r rMin rMax _)
       | any (\arg -> arg < 0 || arg > 100) [c, cMin, cMax, r, rMin, rMax]
         = Left "Options should be integers in the range [0, 100]."
       | (cMin > cMax) || (rMin > rMax)
@@ -50,6 +53,7 @@ main = do
       <*> option auto (short 'r' <> help "Integer in the range 0-100 representing the percentage of rows to be swapped")
       <*> option auto (long "row-min" <> help "Integer in the range 0-100 representing where to start random row swapping")
       <*> option auto (long "row-max" <> help "Integer in the range 0-100 representing where to end random row swapping")
+      <*> optional (option auto $ long "num-iters" <> help "Number of times to run swapping with the given options")
 
 
 -- | CLI.
@@ -61,6 +65,7 @@ data CLI = CLI
   , cRowRand       :: Int -- ^ Degree of randomness to apply to row swapping.
   , cRowLowerBound :: Int -- ^ Where to start the row randomness (normalized to the interval [0, 100]).
   , cRowUpperBound :: Int -- ^ Where to end the row randomness (normalized to the interval [0, 100]).
+  , cNumIters      :: Maybe Int -- ^ Number of times to apply the same swapping settings to the same image interatively.
   } deriving (Eq, Show)
 
 
@@ -76,7 +81,7 @@ makeSwapOpts
   :: CLI -- ^ User-provided options.
   -> Image PixelRGBA8 -- ^ Source image.
   -> IO SwapOpts
-makeSwapOpts (CLI _ cRand cMin cMax rRand rMin rMax) Image {..} = do
+makeSwapOpts (CLI _ cRand cMin cMax rRand rMin rMax _) Image {..} = do
   soCol <- if cRand == 0 then return Nothing else Just <$> makeSwapOpt cRand cMin cMax imageWidth
   soRow <- if rRand == 0 then return Nothing else Just <$> makeSwapOpt rRand rMin rMax imageHeight
   return SwapOpts {..}
