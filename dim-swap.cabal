@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: eb97fe8806f17ad6c559b5fa4ee072e07e41f82710b8940a2cda59407570df97
+-- hash: b401912323e4250470758e0ee983308d4f7a20dc1f5845954552fcbcdf92fe39
 
 name:           dim-swap
 version:        0.1.0.0
@@ -36,7 +36,6 @@ executable dim-swap
     , base >=4.7 && <5
     , lens
     , optparse-applicative
-    , primitive
     , random-extras
     , random-fu
     , split
