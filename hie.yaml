@@ -1,5 +1,5 @@
 cradle:
-  stack:
+  cabal:
     - path: "./Main.hs"
       component: "dim-swap:exe:dim-swap"
 
