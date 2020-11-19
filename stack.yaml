@@ -1,4 +1,4 @@
-resolver: lts-13.5
+resolver: lts-14.27
 extra-deps:
   - random-extras-0.19
 local-bin-path: bin/

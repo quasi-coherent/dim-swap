@@ -23,7 +23,7 @@ main = do
   swapOpts <- makeSwapOpts cli src
   let new = case cNumIters of
         Nothing -> makeImage swapOpts src
-        Just n  -> foldr (.) id (replicate n (makeImage swapOpts)) src
+        Just n  -> foldr ($) src (replicate n (makeImage swapOpts))
   writePng (makeFileName cli cImgPath) new
   where
     makeFileName CLI {..} imgPath =

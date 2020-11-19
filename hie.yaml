@@ -1,0 +1,7 @@
+cradle:
+  stack:
+    - path: "./Main.hs"
+      component: "dim-swap:exe:dim-swap"
+
+dependencies:
+  - package.yaml
