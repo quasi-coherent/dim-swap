@@ -24,7 +24,9 @@ main = do
   let new = case cNumIters of
         Nothing -> makeImage swapOpts src
         Just n  -> foldr ($) src (replicate n (makeImage swapOpts))
-  writePng (makeFileName cli cImgPath) new
+      outPath = makeFileName cli cImgPath
+  writePng outPath new
+  putStrLn outPath
   where
     makeFileName CLI {..} imgPath =
       let baseDir     = imgPath ^. directory
