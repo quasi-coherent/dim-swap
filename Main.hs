@@ -48,7 +48,7 @@ main = do
     cliParser = info (helper <*> parseCLI) (header "dim-swap")
 
     parseCLI = CLI
-      <$> strOption (long "file" <> help "Image to sort")
+      <$> strOption (long "file" <> help "Image to swap")
       <*> option auto (short 'c' <> help "Integer in the range 0-100 representing the percentage of columns to be swapped")
       <*> option auto (long "col-min" <> help "Integer in the range 0-100 representing where to start random column swapping")
       <*> option auto (long "col-max" <> help "Integer in the range 0-100 representing where to end random column swapping")
